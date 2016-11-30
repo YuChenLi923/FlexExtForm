@@ -109,7 +109,6 @@ FlexExtForm的使用非常便利，只需要下面这几步
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8;">
 		<title>表单验证与提交</title>
-		<script type="text/javascript" src="js/commonFunction.js"></script>
 	</head>
 	<body>
 	<form id='Form' onsubmit="return false" >
@@ -118,11 +117,10 @@ FlexExtForm的使用非常便利，只需要下面这几步
 		<input id='companyName' type="text" name="companyName"></input>
 	</form>
 	<button id='Form_sumbit' switch='on'>提交数据</button>
-	<script type="text/javascript" src="js/FormSub.js"></script>
+	<script type="text/javascript" src="js/FlexExtForm.min.js"></script>
 	<script type="text/javascript">
 		createForm(
 			[	
-				
 				{
 					id:'Key',
 					type:'密码',
@@ -143,6 +141,7 @@ FlexExtForm的使用非常便利，只需要下面这几步
 	</script>
 	</body>
 </html>
+
 
 ```
 
