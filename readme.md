@@ -126,12 +126,14 @@ FlexExtForm的使用非常便利，只需要下面这几步
 				{
 					id:'Key',
 					type:'密码',
-					pattern:' '
+					pattern:' ',
+					ajax:false
 				},
 				{
 					id:'repeatKey',
 					type:'重复密码',
-					pattern:' '
+					pattern:' ',
+					ajax:false
 				}
 			]
 		,callback,['click','keydown','touch','change'],'Form',' ');
