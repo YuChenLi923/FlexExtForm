@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=UTF-8;">
+		<title>表单验证与提交</title>
+		<script type="text/javascript" src="js/commonFunction.js"></script>
+	</head>
+	<body>
+	<form id='Form' onsubmit="return false" >
+		<input id='Key' type="password" name="Key"></input>
+		<input id='repeatKey' type="password" name="repeatKey"></input>
+		<input id='companyName' type="text" name="companyName"></input>
+	</form>
+	<button id='Form_sumbit' switch='on'>提交数据</button>
+	<script type="text/javascript" src="js/FlexExtForm.min.js"></script>
+	<script type="text/javascript">
+		createForm(
+			[	
+				
+				{
+					id:'Key',
+					type:'密码',
+					pattern:' ',
+					ajax:false
+				},
+				{
+					id:'repeatKey',
+					type:'重复密码',
+					pattern:' ',
+					ajax:false
+				}
+			]
+		,callback,['click','keydown','touch','change'],'Form',' ');
+		function callback(flag,name){
+			console.log(flag,name);
+		}
+	</script>
+	</body>
+</html>
