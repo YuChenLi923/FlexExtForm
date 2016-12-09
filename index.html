@@ -6,38 +6,26 @@
 	</head>
 	<body>
 	<form id='Form' onsubmit="return false" >
-		<input id='Key' type="password" name="Key"></input>
-		<input id='repeatKey' type="password" name="repeatKey"></input>
+	
 		<input id='companyName' type="text" name="companyName"></input>
 	</form>
 	<button id='Form_sumbit' switch='on'>提交数据</button>
-	<script type="text/javascript" src="js/FlexExtForm.min.js"></script>
+	<script type="text/javascript" src="js/FlexExtForm.js"></script>
 	<script type="text/javascript">
 		createForm(
 			[	
-				{
-					id:'Key',
-					type:'密码',
-					pattern:' ',
-					ajax:false
-				},
-				{
-					id:'repeatKey',
-					type:'重复密码',
-					pattern:' ',
-					ajax:false
-				},
+			
 				{
 					id:'companyName',
 					type:'公司名',
-					pattern:' ',
-					ajax:false
+					pattern:/^[0-9]{1,}$/,
+					ajax:true
 				}
 				
 			]
-		,callback,['click','keydown','touch','change'],'Form',' ');
+		,callback,['click','keydown','touch','change'],'Form','php/Form.php');
 		function callback(flag,name){
-			console.log(flag,name);
+				console.log(flag,name);
 		}
 	</script>
 	</body>

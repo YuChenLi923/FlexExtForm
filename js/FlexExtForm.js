@@ -111,7 +111,7 @@ var createForm=(function createForm(){
 			this.pattern=formInf.Pattern;
 			this.input=getElement(doc,'#'+formInf.ID,false);
 			this.value=this.input.value;
-			this.mask=1;
+			this.mask=0;
 			this.flag=1;
 			this.URL=URL;
 			this.ajax=formInf.Ajax;
@@ -120,53 +120,56 @@ var createForm=(function createForm(){
 			constructor:FormVerify,
 			SayWarn:function(){
 				this.value=this.input.value;
-				if(this.mask==1){
-					if(this.value){
-						if(this.pattern==' '||this.pattern.test(this.value)){
-							callback(0,this.Type);
+				if(this.value){
+					if(this.pattern==' '||this.pattern.test(this.value)){
+						callback(0,this.Type);
+						if(!this.ajax)
 							this.flag=1;
-						}
-						else{
-							callback(10,this.Type);	
-							this.flag=0;		
-						}
+						this.mask=1;
 					}
 					else{
-						callback(11,this.Type);
-						this.flag=0;	
+						callback(10,this.Type);	
+						this.flag=0;
+						this.mask=0;		
 					}
+				}
+				else{
+					callback(11,this.Type);
+					this.flag=0;	
 				}
 			},
 			FormAjax:function(){
-				var xhr=creatXHR();
-				if(xhr){
-					var URL=this.URL,
-						that=this;
-					xhr.onreadystatechange=function(){
-						if (xhr.readyState==4){
-							if ((xhr.status>=200&&xhr.status<300)||xhr.status==304) {
-								that.mask=parseInt(xhr.responseText);
-								if(that.mask==0){
-									callback(13,this.Type);
-									that.flag=0;
-									that.mask=1;
+				if(this.mask==1){
+					var xhr=creatXHR();
+					if(xhr){
+						var URL=this.URL,
+							that=this,
+							result;
+						xhr.onreadystatechange=function(){
+							if (xhr.readyState==4){
+								if ((xhr.status>=200&&xhr.status<300)||xhr.status==304) {
+									result=parseInt(xhr.responseText);
+									if(result==0){
+										callback(13,that.Type);
+										that.flag=0;
+									}
+									else{
+										callback(14,that.Type);
+										that.flag=1;
+									}
 								}
 								else{
-									callback(14,this.Type);
-									that.flag=1;
-									that.mask=0;
+									callback(2,that.Type);
 								}
 							}
-							else{
-								callback(2,this.Type);
-							}
-						}
-					};
-					this.value=this.input.value;
-					URL=encodeURI(URL+"?Value="+this.value+"&Type="+this.Id+"&sid="+Math.random());
-					xhr.open("GET",URL,true);
-					xhr.send(null);
-				}		
+						};
+						this.value=this.input.value;
+						URL=encodeURI(URL+"?Value="+this.value+"&Type="+this.Id);
+						xhr.open("GET",URL,true);
+						xhr.send(null);
+					}	
+					this.mask=0;
+				}	
 			},
 			sameWarn:function(){
 				if(this.Id.indexOf("repeat")==0){
@@ -181,15 +184,20 @@ var createForm=(function createForm(){
 				}
 			}	
 	}
+
 	//处理提交
 	function handlerSumbit(){
 			var count=0,
 				t=0,
 				i;
+			uploading(sumbit);
 			for(i in Form){
 				Form[i].SayWarn();
+				if(Form[i].ajax){
+					Form[i].FormAjax();
+				}
 				if(i.indexOf('repeat')==0){
-							Form[i].sameWarn();
+					Form[i].sameWarn();
 				}
 				count=count+Form[i].flag;
 				++t;
@@ -198,6 +206,8 @@ var createForm=(function createForm(){
 				AjaxSumbit('Form',URL,Form,callback);//表单异步提交的URL
 			}
 			else{
+				sumbit.innerHTML='提交数据';
+				sumbit.setAttribute('switch','on');
 				callback(15);
 			}
 	}
@@ -206,15 +216,12 @@ var createForm=(function createForm(){
 			var xhr=creatXHR(),
 				flag=1;
 			xhr.onreadystatechange=function(){
-				if(xhr.readyState<=1){
-					uploading(sumbit);
-				}
 				if (xhr.readyState==4){
 					if ((xhr.status>=200&&xhr.status<300)||xhr.status==304) {
-						var flag=xhr.responseText;	
+						var flag=parseInt(xhr.responseText);	
 						sumbit.innerHTML='提交数据';
 						sumbit.setAttribute('switch','on');
-						if (flag){
+						if (flag==1){
 							callback(4,this.Type);
 						}
 						else{
