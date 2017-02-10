@@ -1,7 +1,8 @@
 ﻿# FlexExtForm
-基于js,能够灵活地处理表单的传输与认证，当前版本1.0.2
+基于js，用于表单的数据的传输和检验，当前版本1.0.3
 
-## 使用说明
+## 快速开始
+
 FlexExtForm的使用非常便利，只需要下面这几步
 
 ### 一、按规范设定HTML
@@ -121,6 +122,7 @@ FlexExtForm的使用非常便利，只需要下面这几步
 		<input id='companyName' type="text" name="companyName"></input>
 	</form>
 	<button id='Form_sumbit' switch='on'>提交数据</button>
+	<script type="text/javascript" src="js/ajaxExpand.min.js"></script>
 	<script type="text/javascript" src="js/FlexExtForm.min.js"></script>
 	<script type="text/javascript">
 		createForm(
@@ -148,54 +150,3 @@ FlexExtForm的使用非常便利，只需要下面这几步
 
 
 ```
-
-## 版本更新
-
-0.1.0
-- 增加了表单验证功能
-
-
-0.1.1 
-- 增加了AJAX数据提交功能（PHP，不支持文件异步传输）
-- 增加回车提交事件
-
-0.2.0
-- 增加了异步文件传输功能（目前仅兼容IE10+,Opera 12+,Safari 5+,Chorme 7+）
-- 增加了验证时出现错误反馈的字符串变量
-
-0.2.1
-
-- 优化了数据结构，能够更方便地添加数据
-- 形成了闭包
-
-0.2.2
-
-- 修复确认密码字段的验证问题
-- 禁止反复提交表单数据	
-- 增加正在提交的提示
-
-0.3.0
-
-- 增加自定义注册失败的函数
-- 增加自定义注册成功的函数
-- 增加自定义数据上传时执行的函数
-
-1.0.0
-
-- 取消以前添加表单字段实例的方式，改为使用createForm()
-- 删除了所以的自定义函数，改为一个回调函数
-- 删除表单认证的提示功能，现在需要在回调函数里面自定义提示效果。
-- 取消了FormVerify的URL属性。现在每个表单字段实例都享有共有的URL。
-- 增加控制器选项，方便扩展。
-
-1.0.1
-
-- 增加回调函数flag-15数值。
-- 修复异步验证未启用的bug
-- 修复相同字段检测未生效的bug
-- 不再需要为提交按钮添加switch自定义属性
-
-1.0.2
-
-- 修复异步验证出现的逻辑错误，即flag为13时的bug
-- 修复在异步验证表单字段时，回调函数name为undefined的bug
