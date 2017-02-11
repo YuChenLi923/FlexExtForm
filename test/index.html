@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="content-type" content="text/html;charset=UTF-8;">
@@ -6,8 +6,7 @@
 	</head>
 	<body>
 	<form id='Form' onsubmit="return false" >
-	
-		<input id='companyName' type="text" name="companyName"></input>
+		<input id='companyName' type="text" name="companyName" value="123"></input>
 	</form>
 	<button id='Form_sumbit' switch='on'>提交数据</button>
 	<script type="text/javascript" src="js/ajaxExpand.min.js"></script>
@@ -19,15 +18,23 @@
 				{
 					id:'companyName',
 					type:'公司名',
-					pattern:/^[0-9]{1,}$/,
+					pattern:' ',
 					ajax:true
 				}
-				
 			]
-		,callback,['click','keydown','touch','change'],'Form','php/Form.php');
+		,callback,['click','keydown','touch','change'],'Form','Form_sumbit','php/Form.php','php/Form_Ajax.php');
 		function callback(flag,name){
-				console.log(flag,name);
+			var sumbit=document.getElementById('Form_sumbit');
+			if(flag == 8 || 9){
+				sumbit.innerHTML='提交';
+				sumbit.setAttribute('switch','on');
+			}
+			if (flag == 7) {
+				sumbit.innerHTML='正在提交数据';
+				sumbit.setAttribute('switch','off')
+			}
+			console.log(flag,name);
 		}
-	</script>
-	</body>
+</script>
+</body>
 </html>

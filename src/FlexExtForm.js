@@ -1,203 +1,199 @@
 var createForm=(function createForm(){
-	var Form={},
-		id=null,
+	var formObjs={},
+		form=null,
 		doc=document,
 		callback=null,
 		sumbit,
-		forms,
-		URL,
-		formObj=null;
-	function FormVerify(formInf,URL){
-			this.Id=formInf.ID;
-			this.Type=formInf.Type;
-			this.pattern=formInf.Pattern;
-			this.input=getElement(doc,'#'+formInf.ID,false);
-			this.value=this.input.value;
-			this.mask=0;
-			this.flag=1;
-			this.URL=URL;
-			this.ajax=formInf.Ajax;
-	}
-	FormVerify.prototype={
-			constructor:FormVerify,
-			SayWarn:function(){
-				this.value=this.input.value;
-				if(this.value){
-					if(this.pattern==' '||this.pattern.test(this.value)){
-						callback(0,this.Type);
-						if(!this.ajax)
-							this.flag=1;
-						this.mask=1;
-					}
-					else{
-						callback(10,this.Type);	
-						this.flag=0;
-						this.mask=0;		
-					}
+		post_url,
+		get_url,
+		formObj=null,
+		Event={
+			addListener:function(element,type,handler){
+
+				if(element.addEventListener){
+					element.addEventListener(type,handler,false);
+				}
+				else if(element.attachEvent){
+					element.attachEvent("on"+type,handler);
 				}
 				else{
-					callback(11,this.Type);
-					this.flag=0;	
+					element["on"+type]=handler;
 				}
 			},
-			FormAjax:function(){
-				var URL=this.URL,
-					that=this;
-					ajaxExpanding.init({
-						type:'get',
-						async:'true',
-						contentType:'text',
-						accept:"text",
-						charset:"utf-8"
-					});
-				if(this.mask==1){
-					ajaxExpanding.send({
-						url:URL,
-						data:{
-							Value:this.value,
-							Type:this.Id
-						},
-						onSuccess:function(responseText){
-							var result=parseInt(responseText);
-							if(result==0){
-								callback(13,that.Type);
-								this.flag=0;
-							}
-							else{
-								callback(14,that.Type);
-								this.flag=1;
-							}
-						},
-						onFail:function(){
-								callback(2,that.Type);
-						}
-					},this)
+			getEvent:function(event){
+				return event || window.event || arguments.callee.caller.arguments[0];
+			},
+			getTarget:function(event){
+				return  event.target||event.srcElement;
+			}
+		};
+	function FormVerify(formInf,URL){
+		this.Id=formInf.ID;
+		this.Type=formInf.Type;
+		this.pattern=formInf.Pattern;
+		this.input=doc.getElementById(formInf.ID);
+		this.value=this.input.value;
+		this.mask=0;
+		this.flag=1;
+		this.URL=URL;
+		this.ajax=formInf.Ajax;
+	}
+	FormVerify.prototype={
+		constructor:FormVerify,
+		SayWarn:function(){
+			this.value=this.input.value;
+			if(this.value){
+				if(this.pattern==' '||this.pattern.test(this.value)){
+					callback(0,this.Type);
+					if(!this.ajax)
+						this.flag=1;
+					this.mask=1;
+				}
+				else{
+					callback(1,this.Type);
+					this.flag=0;
 					this.mask=0;
-				}	
-			},
-			sameWarn:function(){
-				if(this.Id.indexOf("repeat")==0){
-					 var key=getElement(doc,"#"+this.Id.replace(/^repeat/,''),false);
-					 if(this.input.value!=key.value){
-					 	callback(12,this.Type);
-					 	this.flag=0;
-					 }
-					 else{
-					 	callback(0,this.Type);
-					 }
 				}
-			}	
+			}
+			else{
+				callback(2,this.Type);
+				this.flag=0;
+			}
+		},
+		FormAjax:function(){
+			var URL=this.URL,
+				that=this;
+			ajaxExpanding.init({
+				type:'get',
+				async:'true',
+				contentType:'text',
+				accept:"text",
+				charset:"utf-8"
+			});
+			if(this.mask==1){
+				ajaxExpanding.send({
+					url:get_url,
+					data:{
+						Value:this.value,
+						Type:this.Id
+					},
+					onSuccess:function(responseText){
+						callback(3,this.Type,responseText)
+					},
+					onFail:function(){
+						callback(4,that.Type);
+					}
+				},this)
+				this.mask=0;
+			}
+		},
+		sameWarn:function(){
+			if(this.Id.indexOf("repeat")==0){
+				var key=doc.getElementById(this.Id.replace(/^repeat/,''));
+				if(this.input.value!=key.value){
+					callback(5,this.Type);
+					this.flag=0;
+				}
+				else{
+					callback(6,this.Type);
+				}
+			}
+		}
 	}
 	//处理提交
 	function handlerSumbit(){
-			var count=0,
-				t=0,
-				i;
-			uploading(sumbit);
-			AjaxSumbit('Form',URL,Form,callback);//表单异步提交的URL
-			
+		var count=0,
+			t=0,
+			i;
+		callback(7);
+		AjaxSumbit(form,URL,Form,callback);//表单异步提交的URL
+
 	}
 	// id-对应表单的id ,URL异步请求的URL，callback异步提交数据成功后的回调函数
-	function AjaxSumbit(id,URL,Form,success,fail){
-			var formObj=document.getElementById(id),
-				flag=1;
-			ajaxExpanding.init({
-				type:'post',
-				async:'true',
-				contentType:'form',
-				charset:"utf-8"
-			});
-			ajaxExpanding.send({
-				url:URL,
-				data:formObj,
-				onSuccess:function(responseText){
-					var flag=parseInt(responseText);	
-						console.log(responseText);
-						sumbit.innerHTML='提交数据';
-						sumbit.setAttribute('switch','on');
-						if (flag==1){
-							callback(4,this.Type);
-						}
-						else{
-							callback(3,this.Type);
-						}
-				},
-				onError:function(){
-					sumbit.setAttribute('switch','on');
-					sumbit.innerHTML='提交';
-					callback(2,this.Type);
-				}
-			},this)
+	function AjaxSumbit(form,URL,Form,success,fail){
+		var flag=1;
+		ajaxExpanding.init({
+			type:'post',
+			async:'true',
+			contentType:'form',
+			charset:"utf-8"
+		});
+		ajaxExpanding.send({
+			url:post_url,
+			data:form,
+			onSuccess:function(responseText){
+				callback(8,this.Type,responseText);
+			},
+			onError:function(){
+				callback(9,this.Type);
+			}
+		},this)
 	}
 	var controlPattern={
-			click:function(){
-				Event.addListener(sumbit,'click',function(){
-					if(sumbit.getAttribute('switch')=='on'){	
-						handlerSumbit();
+		click:function(){
+			Event.addListener(sumbit,'click',function(){
+				if(sumbit.getAttribute('switch')=='on'){
+					handlerSumbit();
+				}
+			});
+		},
+		keydown:function(){
+			Event.addListener(window,'keydown',function(event){
+				var e =Event.getEvent(event);
+				if(e.keyCode==13){
+					handlerSumbit();
+				}
+			});
+		},
+		touch:function(){
+			Event.addListener(sumbit,'touchstart',function(){
+				if(sumbit.getAttribute('switch')=='on'){
+					handlerSumbit();
+				}
+			});
+		},
+		change:function(){
+			Event.addListener(form,'change',function(event){
+				var event=Event.getEvent(event),
+					target=Event.getTarget(event),
+					name=target.name;
+				if(formObjs[name]){
+					if(name.indexOf('repeat')==0){
+						formObjs[name].sameWarn();
 					}
-				});
-			},
-			keydown:function(){
-				Event.addListener(window,'keydown',function(event){
-					var e =Event.getEvent(event);
-					if(e.keyCode==13){
-						handlerSumbit();
+					formObjs[name].SayWarn();
+					if(formObjs[name].ajax){
+						formObjs[name].FormAjax();
 					}
-				});
-			},
-			touch:function(){
-				Event.addListener(sumbit,'touchstart',function(){
-					if(sumbit.getAttribute('switch')=='on'){	
-						handlerSumbit();
-					}
-				});
-			},
-			change:function(){
-				Event.addListener(forms,'change',function(event){
-					var event=Event.getEvent(event),
-						target=Event.getTarget(event),
-						name=target.name;
-					if(Form[name]){
-						if(name.indexOf('repeat')==0){
-							Form[name].sameWarn();
-						}
-						Form[name].SayWarn();
-						if(Form[name].ajax){
-							Form[name].FormAjax();
-						}
-					}
-				});
-			}
+				}
+			});
+		}
 	}
 	function controlEvent(controls){
 		for(var i=0,len=controls.length;i<len;i++){
 			controlPattern[controls[i]]();
 		}
 	}
-	// 自定义正在上传数据时执行的函数
-	function uploading(sumbit){
-		sumbit.innerHTML='正在提交数据';
-		sumbit.setAttribute('switch','off');
-	}
-	return function(infs,Callback,controls,id,Url){
+	return function(infs,Callback,controls,formId,sumbitId,postURL,getURL){
 		var len=infs.length;
-		URL=Url;
+		post_url=postURL;
+		get_url=getURL;
 		for(var i=0;i<len;i++){
 			var inf=infs[i];
-				form=new FormVerify({
+			formObj=new FormVerify({
 				ID:inf.id,
 				Type:inf.type,
 				Pattern:inf.pattern,
 				Ajax:inf.ajax
 			},URL);
-			Form[inf.id]=form;
+			formObjs[inf.id]=formObj;
 		}
-		sumbit=getElement(doc,'#'+id+'_sumbit',true);
-		forms=getElement(doc,'#'+id,true);
+		sumbit=doc.getElementById(sumbitId);
 		sumbit.setAttribute("switch","on");
-		id=id;
+		form=doc.getElementById(formId);
 		controlEvent(controls);
 		callback=Callback;
-		formObj=doc.getElementById(id)
-	};
+	}
 })();
+
+
