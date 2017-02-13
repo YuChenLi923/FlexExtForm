@@ -21,8 +21,19 @@
 					pattern:' ',
 					ajax:true
 				}
-			]
-		,callback,['click','keydown','touch','change'],'Form','Form_sumbit','php/Form.php','php/Form_Ajax.php');
+			],
+			callback,
+			['click','keydown','touch','change'],
+			'Form','Form_sumbit',
+			'php/Form.php',
+			'php/Form_Ajax.php',
+			isSumbit
+		);
+		function isSumbit(){// 加入switch的目的是为了让异步提交的过程使得提交按钮失效！！！
+			if(this.sumbit.getAttribute('switch')=='on'){
+				return true;
+			}
+		}
 		function callback(flag,name){
 			var sumbit=document.getElementById('Form_sumbit');
 			if(flag == 8 || 9){

@@ -31,7 +31,7 @@ FlexExtForm的使用非常便利，只需要下面这几步
 
 ``` js
 
-	creatForm([form fields],callback,[controls],formId,submitId,postURL,getURL)
+	creatForm([form fields],callback,[controls],formId,submitId,postURL,getURL,isSumbit)
 
 ```
 参数说明：
@@ -49,9 +49,9 @@ FlexExtForm的使用非常便利，只需要下面这几步
 	},
 ```
 
-- callback(flag,name,)
+- callback(flag,name,responseText)
 
-回调函数，这个函数会接受表单验证或提交过程中的标志信息，接受到不同的标志信息反映了当前表单验证或者提交时的情况。同时它也会接受某个表单字段的名称。可能出现的flag值如下：
+回调函数，这个函数会接受表单验证或提交过程中的标志信息，接受到不同的标志信息反映了当前表单验证或者提交时的情况。同时它也会接受某个表单字段的名称（name），当成功向服务器提交数据时,responseText会获得服务器返回的数据。可能出现的flag值如下：
 
 	-  0 某个表单字段数据信息检验合法,表单数据未提交。
 	-  1 某个表单字段数据某些信息不合法,表单数据未提交。
@@ -63,6 +63,8 @@ FlexExtForm的使用非常便利，只需要下面这几步
 	-  7 表单数据被提交时
 	-  8 表单数据提交服务器成功
 	-  9 表单数据提交服务器失败
+
+
 
 - controls
 字符串数组,设置提交按钮以及表单验证的控制器，含有以下选项:
@@ -76,7 +78,7 @@ FlexExtForm的使用非常便利，只需要下面这几步
 - submitId 提交按钮对应的id
 - postURL  提交表单数据时服务器的URL
 - getURL   检验提交数据的服务器URL
-
+- isSumbit 布尔值or函数(这个函数返回布尔值) 设置提交按钮是否有效
 
 #### 示例
 

@@ -7,9 +7,9 @@ var createForm=(function createForm(){
 		post_url,
 		get_url,
 		formObj=null,
+		isSumbit=null,
 		Event={
 			addListener:function(element,type,handler){
-
 				if(element.addEventListener){
 					element.addEventListener(type,handler,false);
 				}
@@ -107,7 +107,6 @@ var createForm=(function createForm(){
 			i;
 		callback(7);
 		AjaxSumbit(form,URL,Form,callback);//表单异步提交的URL
-
 	}
 	// id-对应表单的id ,URL异步请求的URL，callback异步提交数据成功后的回调函数
 	function AjaxSumbit(form,URL,Form,success,fail){
@@ -132,24 +131,22 @@ var createForm=(function createForm(){
 	var controlPattern={
 		click:function(){
 			Event.addListener(sumbit,'click',function(){
-				if(sumbit.getAttribute('switch')=='on'){
+				if(isSumbits||isSumbits==null)
 					handlerSumbit();
-				}
 			});
 		},
 		keydown:function(){
 			Event.addListener(window,'keydown',function(event){
 				var e =Event.getEvent(event);
-				if(e.keyCode==13){
+				if(e.keyCode==13 && ( isSumbits || isSumbits == null )){
 					handlerSumbit();
 				}
 			});
 		},
 		touch:function(){
 			Event.addListener(sumbit,'touchstart',function(){
-				if(sumbit.getAttribute('switch')=='on'){
+				if(isSumbits||isSumbits==null)
 					handlerSumbit();
-				}
 			});
 		},
 		change:function(){
@@ -174,7 +171,7 @@ var createForm=(function createForm(){
 			controlPattern[controls[i]]();
 		}
 	}
-	return function(infs,Callback,controls,formId,sumbitId,postURL,getURL){
+	return function(infs,Callback,controls,formId,sumbitId,postURL,getURL,isSumbits){
 		var len=infs.length;
 		post_url=postURL;
 		get_url=getURL;
@@ -189,11 +186,9 @@ var createForm=(function createForm(){
 			formObjs[inf.id]=formObj;
 		}
 		sumbit=doc.getElementById(sumbitId);
-		sumbit.setAttribute("switch","on");
+		isSumbit=isSumbits;
 		form=doc.getElementById(formId);
 		controlEvent(controls);
 		callback=Callback;
 	}
 })();
-
-
