@@ -1,5 +1,5 @@
 ﻿# FlexExtForm
-FlexExtForm是一个基于javascript编写的工具，能够灵活地处理表单的传输与认证，当前版本1.0.4
+FlexExtForm是一个基于javascript编写的工具，能够灵活地处理表单的传输与认证，当前版本1.0.3
 
 ## 快速开始
 FlexExtForm的使用非常便利，只需要下面这几步
@@ -99,13 +99,13 @@ FlexExtForm的使用非常便利，只需要下面这几步
 					ajax:false
 				}
 			]
-		,callback,['click','keydown','touch','change'],'Form',' ');
+		,callback,['click','keydown','touch','change'],'Form','Form_sumbit','php/Form_Ajax.php');
 		function callback(flag,name){
 			console.log(flag,name);
 		}
 
 ```
-
+,
 ### 完整代码示例
 
 ``` html
