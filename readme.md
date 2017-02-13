@@ -1,5 +1,5 @@
 ﻿# FlexExtForm
-FlexExtForm是一个基于javascript编写的工具，能够灵活地处理表单的传输与认证，当前版本1.0.3
+FlexExtForm是一个基于javascript编写的工具，能够灵活地处理表单的传输与认证，当前版本1.0.4
 
 ## 快速开始
 FlexExtForm的使用非常便利，只需要下面这几步
