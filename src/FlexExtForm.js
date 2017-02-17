@@ -7,7 +7,7 @@ var createForm=(function createForm(){
 		post_url,
 		get_url,
 		formObj=null,
-		isSumbit=null,
+		isSumbits=null,
 		Event={
 			addListener:function(element,type,handler){
 				if(element.addEventListener){
@@ -64,6 +64,7 @@ var createForm=(function createForm(){
 			var URL=this.URL,
 				that=this;
 			ajaxExpanding.init({
+                name:'form_ajax',
 				type:'get',
 				async:'true',
 				contentType:'text',
@@ -83,7 +84,7 @@ var createForm=(function createForm(){
 					onFail:function(){
 						callback(4,that.Type);
 					}
-				},this)
+				},'form_ajax',this)
 				this.mask=0;
 			}
 		},
@@ -106,17 +107,11 @@ var createForm=(function createForm(){
 			t=0,
 			i;
 		callback(7);
-		AjaxSumbit(form,URL,Form,callback);//表单异步提交的URL
+		AjaxSumbit(form,post_url,Form,callback);//表单异步提交的URL
 	}
 	// id-对应表单的id ,URL异步请求的URL，callback异步提交数据成功后的回调函数
 	function AjaxSumbit(form,URL,Form,success,fail){
 		var flag=1;
-		ajaxExpanding.init({
-			type:'post',
-			async:'true',
-			contentType:'form',
-			charset:"utf-8"
-		});
 		ajaxExpanding.send({
 			url:post_url,
 			data:form,
@@ -125,8 +120,11 @@ var createForm=(function createForm(){
 			},
 			onError:function(){
 				callback(9,this.Type);
-			}
-		},this)
+			},
+            onfileUpCallback:function () {
+            	callback(10,this.Type);
+            }
+		},'form',this)
 	}
 	var controlPattern={
 		click:function(){
@@ -182,13 +180,21 @@ var createForm=(function createForm(){
 				Type:inf.type,
 				Pattern:inf.pattern,
 				Ajax:inf.ajax
-			},URL);
+			},get_url);
 			formObjs[inf.id]=formObj;
 		}
 		sumbit=doc.getElementById(sumbitId);
-		isSumbit=isSumbits;
+		isSumbits=isSumbits;
 		form=doc.getElementById(formId);
 		controlEvent(controls);
 		callback=Callback;
+        ajaxExpanding.init({
+            name:'form',
+            type:'post',
+            async:'true',
+            contentType:'form',
+            charset:"utf-8",
+            data:form
+        });
 	}
 })();
